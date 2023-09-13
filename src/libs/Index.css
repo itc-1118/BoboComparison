@@ -1,0 +1,71 @@
+body,
+div,
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+}
+
+/* 链接默认样式重置 */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 列表样式重置 */
+ul,
+ol {
+    list-style: none;
+}
+
+body {
+    padding: 30px;
+}
+
+#app {
+    margin: 20px;
+    min-width: 630px;
+    font-family: PingFangSC-Regular;
+}
+
+.ivu-table-wrapper {
+    width: 100%;
+}
+
+section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 2px solid #607d8b;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
+.btns {
+    height: 72px;
+    min-width: 72px;
+}
+
+.btns._19be6b {
+    background: #19be6b;
+}
+
+.mt3 {
+    margin-top: 8px;
+}
+
+.mr10 {
+    margin-right: 10px;
+}
+
+.summary {}
+
+.summary span {
+    color: #9c27b0;
+    font-size: 18px;
+}

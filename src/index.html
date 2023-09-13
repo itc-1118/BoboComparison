@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" nodeIntegration="true">
+  <head>
+    <title>Bobo Comparison</title>
+    <!-- import Vue.js -->
+    <script src="./libs/Vue.3.2.36.js"></script>
+    <!-- import stylesheet -->
+    <link rel="stylesheet" href="./libs/View-ui-plus.1.3.14.css" />
+    <link rel="stylesheet" href="./libs/Index.css" />
+    <script type="text/javascript" src="./libs/View-ui-plus.1.3.14.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <section>
+        <div>
+          <div class="box">
+            <span class="mr10">原始目录: </span>
+            <i-button class="mr10" @click="handleFilesSelected(1)"
+              >选择目录</i-button
+            >
+            <i-input
+              disabled
+              v-model="originalFilePath"
+              placeholder="Enter something..."
+              style="width: 300px"
+            />
+          </div>
+          <div class="box mt3">
+            <span class="mr10">对比目录: </span>
+            <i-button class="mr10" @click="handleFilesSelected(2)"
+              >选择目录</i-button
+            >
+            <i-input
+              disabled
+              v-model="compareFilesPath"
+              placeholder="Enter something..."
+              style="width: 300px"
+            />
+          </div>
+        </div>
+        <i-button class="btns" type="success" @click="handleStartComparing"
+          >开始对比</i-button
+        >
+      </section>
+      <section class="summary">
+        <h3>
+          <Tooltip
+            max-width="300"
+            :content="`表示在两个目录中具有相同文件名和扩展名的文件的总数量（在你的情况下，有${summary.sameDirectoryCount}个文件具有相同的文件名和扩展名）。`"
+            placement="bottom-start"
+          >
+            参与比对文件的数量：<span>{{summary.sameDirectoryCount}}</span>
+          </Tooltip>
+        </h3>
+        <h3>
+          <Tooltip
+            max-width="300"
+            :content="`表示在上述相同文件数量中，实际上内容也相同的文件的数量（这意味着虽然有${summary.sameDirectoryCount}个文件具有相同的文件名和扩展名，但其中只有${summary.sameDirectoryAndFileCount}个文件的内容也相同）。`"
+            placement="bottom-start"
+          >
+            包含相同内容的文件数量：<span
+              >{{summary.sameDirectoryAndFileCount}}</span
+            >
+          </Tooltip>
+        </h3>
+        <h3>
+          整体相似度百分比：<span
+            >{{summary.overallSimilarityPercentage}}%</span
+          >
+        </h3>
+      </section>
+      <section>
+        <i-table :columns="columns" :data="diffData">
+          <template #similarity="{ row }">
+            <span>{{ row.similarity }}</span>
+          </template>
+        </i-table>
+      </section>
+    </div>
+    <script src="./preload.js"></script>
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            fileType: 1,
+            originalFilePath: "",
+            compareFilesPath: "",
+            summary: {
+              overallSimilarityPercentage: "0",
+              sameDirectoryAndFileCount: 0,
+              sameDirectoryCount: 0,
+            },
+            columns: [
+              {
+                title: "原始文件",
+                key: "file1",
+              },
+              {
+                title: "对比文件",
+                key: "file2",
+              },
+              {
+                title: "相似度",
+                slot: "similarity",
+              },
+            ],
+            diffData: [],
+          };
+        },
+        async mounted() {
+          ipcRenderer.on("selected-directory", (event, path) => {
+            const selectedPath =
+              this.fileType === 1 ? "originalFilePath" : "compareFilesPath";
+            this[selectedPath] = path;
+          });
+        },
+        methods: {
+          // 选择文件夹
+          handleFilesSelected(type) {
+            this.fileType = type;
+            ipcRenderer.send("open-file-dialog");
+          },
+          // 开始对比
+          async handleStartComparing() {
+            if (this.originalFilePath === "" || this.compareFilesPath === "") {
+              this.$Notice.open({
+                title: "提示",
+                desc: "请选择需要对比的内容！",
+              });
+              return;
+            }
+            const res = await ipcRenderer.diff([
+              this.originalFilePath,
+              this.compareFilesPath,
+            ]);
+            this.summary = res;
+            this.diffData = this.summary.similarityFileComparisons;
+          },
+        },
+      });
+      app.use(ViewUIPlus);
+      app.mount("#app");
+    </script>
+  </body>
+</html>

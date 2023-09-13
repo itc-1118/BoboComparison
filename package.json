@@ -1,0 +1,47 @@
+{
+  "name": "BoboComparison",
+  "version": "1.0.0-beat.0",
+  "description": "啵啵对比，一个项目文件相似度比对分析神器。",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ./start.js",
+    "build": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Electron",
+    "Comparison",
+    "demo"
+  ],
+  "author": "itc",
+  "license": "ISC",
+  "dependencies": {
+    "natural": "^6.7.2"
+  },
+  "devDependencies": {
+    "diff": "^5.1.0",
+    "diff-match-patch": "^1.0.5",
+    "electron": "^26.2.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.icispace.iliao",
+    "productName": "Bobo Comparison",
+    "mac": {
+      "icon": "",
+      "target": {
+        "target": "default",
+        "arch": [
+          "arm64",
+          "x64"
+        ]
+      }
+    },
+    "win": {
+      "icon": ""
+    },
+    "linux": {
+      "icon": ""
+    }
+  }
+}
